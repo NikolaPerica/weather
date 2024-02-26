@@ -6,6 +6,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import { parseISO } from "date-fns/parseISO";
 import Container from "./components/Container";
+import WeatherIcon from "./components/WeatherIcon";
 
 //https://api.openweathermap.org/data/2.5/forecast?q=Split&appid=7f179e6b525bf3a607c6e4f39b5a0e94&units=metric&cnt=56
 
@@ -88,12 +89,13 @@ export default function Home() {
       <Navbar />
       <main className="px-3 max-w-7xl mx-auto flex flex-col gap-9 w-full pb-10 pt-4">
         {/*today data */}
-        <section>
+        <section className="space-y-4">
+          <div className="space-y-2">
           <h2 className="flex gap-1 text-2xl items-end">
             <p>{format(parseISO(firstData?.dt_txt??''), "EEEE")}</p>
             <p className="text-lg">({format(parseISO(firstData?.dt_txt??''), "dd.MM.yyyy")})</p>
           </h2>
-          <Container className="gap-10 px6 items-center">
+          <Container className="gap-10 px-6 items-center">
             <div className="flex flex-col px4">
               <span className="text-5xl">
                 {firstData?.main.temp.toFixed(0)}°
@@ -104,16 +106,29 @@ export default function Home() {
               </p>
               <p className="text-xs space-x-2">
                 <span>
-                  {firstData?.main.temp_min}°↓{" "}
+                  {firstData?.main.temp_min.toFixed(0)}°↓{" "}
                 </span>
                 <span>
-                  {" "}{firstData?.main.temp_max}°↑
+                  {" "}{firstData?.main.temp_max.toFixed(0)}°↑
                 </span>
               </p>
               
             </div>
+            {/*time and weather */}
+            <div className="flex gap-10 sm:gap-16 overflow-x-auto w-full justify-between pr-3">
+              {data?.list.map((d,i)=>(
+                <div key={i} className="flex flex-col justify-between gap-2 w-full items-center text-xs font-semibold">
+                  <p className="whitespace-nowrap">
+                    {format(parseISO(d.dt_txt), "HH:mm ")}
+                  </p>
+                  <WeatherIcon iconName={d.weather[0].icon}/>
+                  <p>{d?.main.temp.toFixed(0)}°</p>
+                  <p><br /></p>
+                </div>
+              ))}
+            </div>
           </Container>
-
+          </div>
         </section>
         {/*7 day */}
         <section></section>
